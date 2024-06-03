@@ -23,6 +23,9 @@ import com.bezkoder.spring.jwt.mongodb.repository.UserRepository;
 import com.bezkoder.spring.jwt.mongodb.security.jwt.JwtUtils;
 import com.bezkoder.spring.jwt.mongodb.security.services.UserDetailsImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -40,8 +43,12 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 
+	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+		logger.info("Attempting to authenticate user: {}", loginRequest.getUsername());
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -51,6 +58,8 @@ public class AuthController {
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+		logger.info("User authenticated successfully. Generating JWT token.");
+
 		return ResponseEntity.ok(new JwtResponse(jwt,
 				userDetails.getId(),
 				userDetails.getUsername(),
@@ -59,13 +68,17 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+		logger.info("Attempting to register user: {}", signUpRequest.getUsername());
+
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+			logger.error("Username is already taken: {}", signUpRequest.getUsername());
 			return ResponseEntity
 					.badRequest()
 					.body(new MessageResponse("Error: Username is already taken!"));
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			logger.error("Email is already in use: {}", signUpRequest.getEmail());
 			return ResponseEntity
 					.badRequest()
 					.body(new MessageResponse("Error: Email is already in use!"));
@@ -77,6 +90,8 @@ public class AuthController {
 				encoder.encode(signUpRequest.getPassword()));
 
 		userRepository.save(user);
+
+		logger.info("User registered successfully: {}", signUpRequest.getUsername());
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}

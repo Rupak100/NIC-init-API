@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/")
 public class AuthController {
 
 	@Autowired
@@ -45,7 +45,7 @@ public class AuthController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-	@PostMapping("/signin")
+	@PostMapping("init")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		logger.info("Attempting to authenticate user: {}", loginRequest.getUsername());
@@ -66,7 +66,7 @@ public class AuthController {
 				userDetails.getEmail()));
 	}
 
-	@PostMapping("/signup")
+	@PostMapping("signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		logger.info("Attempting to register user: {}", signUpRequest.getUsername());
 

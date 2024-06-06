@@ -18,25 +18,22 @@ public class JsonDocumentController {
     @Autowired
     private JsonDocumentRepository jsonDocumentRepository;
 
-
     @GetMapping("getalldocuments")
     public ResponseEntity<List<JsonDocument>> getAllDocuments() {
         List<JsonDocument> documents = jsonDocumentRepository.findAll();
-        // Removing id field from each document
-        documents.forEach(document -> document.setId(null));
         return ResponseEntity.ok(documents);
     }
 
     @PostMapping("savedocument")
     public ResponseEntity<JsonDocument> saveJsonData(@RequestBody JsonDocument jsonData) {
-        jsonData.setId(UUID.randomUUID());
+        jsonData.setDocumentId(UUID.randomUUID());
         jsonDocumentRepository.save(jsonData);
         return ResponseEntity.ok(jsonData);
     }
 
     @GetMapping("getadocument/{id}")
     public ResponseEntity<?> getDocumentById(@PathVariable UUID id) {
-        Optional<JsonDocument> documentOptional = jsonDocumentRepository.findById(id);
+        Optional<JsonDocument> documentOptional = jsonDocumentRepository.findByDocumentId(id);
 
         if (documentOptional.isPresent()) {
             JsonDocument document = documentOptional.get();
@@ -46,5 +43,17 @@ public class JsonDocumentController {
                     .body("Document with ID " + id + " not found");
         }
     }
-}
 
+    @GetMapping("documentofaperson/{clientId}")
+    public ResponseEntity<?> getDocumentByClientId(@PathVariable String clientId) {
+        Optional<JsonDocument> documentOptional = jsonDocumentRepository.findByClientId(clientId);
+
+        if (documentOptional.isPresent()) {
+            JsonDocument document = documentOptional.get();
+            return ResponseEntity.ok(document);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Document with clientId " + clientId + " not found");
+        }
+    }
+}

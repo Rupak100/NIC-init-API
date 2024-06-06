@@ -1,36 +1,94 @@
 package com.bezkoder.spring.jwt.mongodb.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.Date;
 import java.util.UUID;
 
-@Document(collection = "json_data")
+@Document(collection = "documents")
 public class JsonDocument {
     @Id
-    private UUID id;
+    private String id;
+
+    @Field("document_id")
+    @JsonProperty("document_id")
+    private UUID documentId;
+
+    @Field("client_id")
+    @JsonProperty("client_id")
     private String clientId;
+
+    @Field("client_secret")
+    @JsonProperty("client_secret")
     private String clientSecret;
+
+    @Field("created_on")
+    @JsonProperty("created_on")
     private Date createdOn;
+
+    @Field("expiry_on")
+    @JsonProperty("expiry_on")
     private Date expiryOn;
+
+    @Field("state_code")
+    @JsonProperty("state_code")
     private String stateCode;
+
+    @Field("state_name")
+    @JsonProperty("state_name")
     private String stateName;
+
+    @Field("department_code")
+    @JsonProperty("department_code")
     private String departmentCode;
+
+    @Field("department_name")
+    @JsonProperty("department_name")
     private String departmentName;
+
+    @Field("govt")
+    @JsonProperty("govt")
     private String govt;
+
+    @Field("nodal_officer_name")
+    @JsonProperty("nodal_officer_name")
     private String nodalOfficerName;
+
+    @Field("nodal_officer_mobile")
+    @JsonProperty("nodal_officer_mobile")
     private String nodalOfficerMobile;
+
+    @Field("nodal_officer_email")
+    @JsonProperty("nodal_officer_email")
     private String nodalOfficerEmail;
+
+    @Field("nodal_officer_designation")
+    @JsonProperty("nodal_officer_designation")
     private String nodalOfficerDesignation;
+
+    @Field("content")
+    @JsonProperty("content")
     private String content;
 
     // Getters and setters
-    public UUID getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public UUID getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(UUID documentId) {
+        this.documentId = documentId;
     }
 
     public String getClientId() {
@@ -145,6 +203,3 @@ public class JsonDocument {
         this.content = content;
     }
 }
-
-
-
